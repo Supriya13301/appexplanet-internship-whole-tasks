@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Supriya Mandal | Portfolio</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, lavender, pink);
+      color: #333;
+      line-height: 1.6;
+      transition: background 0.5s ease;
+    }
+    header {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem;
+      position: sticky;
+      top: 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      z-index: 1000;
+    }
+    header h1 {
+      font-size: 1.8rem;
+      color: #a03b8f;
+      flex: 1;
+    }
+    nav {
+      flex: 2;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+    nav a {
+      text-decoration: none;
+      color: #6a0572;
+      font-weight: 600;
+      transition: color 0.3s ease, transform 0.2s;
+    }
+    nav a:hover {
+      color: #e91e63;
+      transform: scale(1.1);
+    }
+    section {
+      padding: 3rem 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+    h1, h2, h3 {
+      color: #6a0572;
+    }
+    #about, #contact {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(14px);
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      
+      margin-bottom: 2.5rem;
+      transition: transform 0.3s ease;
+    }
+    #about:hover, #contact:hover {
+      transform: translateY(-5px);
+    }
+    #contact a {
+      color: #6a0572;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    #contact a:hover {
+      text-decoration: underline;
+      color: #e91e63;
+    }
+    .project, .shop {
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    input, select {
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background-color: #c94acb;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background-color: #a03b8f;
+    }
+    .remove-btn {
+      background-color: #ff6b81;
+      margin-left: 0.5rem;
+      border-radius: 5px;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.85rem;
+    }
+    .remove-btn:hover {
+      background-color: #e74c3c;
+    }
+
+    ul {
+      list-style: none;
+      margin-top: 1rem;
+    }
+    ul li {
+      margin: 0.5rem 0;
+      background: #fff5fa;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+    <header>
+    <h1>Web Portfolio</h1>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+  <section id="about">
+    <h2>About Me</h2>
+    <p>Hi! I'm Supriya. I'm a B.Tech CSE student passionate about web development and software design. Welcome to my interactive and responsive web portfolio!</p>
+  </section>
+  <section id="projects">
+    <h2>Projects</h2>
+    <div class="project">
+      <h3>To-Do List with Local Storage</h3>
+      <input type="text" id="taskInput" placeholder="Add a new task" />
+      <button onclick="addTask()">Add</button>
+      <ul id="taskList"></ul>
+    </div>
+    <div class="shop">
+      <h3>Product Filter & Sort</h3>
+      <select id="categoryFilter" onchange="filterItems()">
+        <option value="all">All Categories</option>
+        <option value="electronics">Electronics</option>
+        <option value="clothing">Clothing</option>
+        <option value="accessories">Accessories</option>
+      </select>
+      <select id="sortPrice" onchange="sortItems()">
+        <option value="default">Sort by</option>
+        <option value="asc">Price: Low to High</option>
+        <option value="desc">Price: High to Low</option>
+      </select>
+      <ul id="productList"></ul>
+    </div>
+  </section>
+  <section id="contact">
+    <h2>Contact</h2>
+    <p>Email: supriya13301@gmail.com</p>
+    <p>GitHub: <a href="https://github.com/supriya13301" target="_blank">github.com/supriya13301</a></p>
+  </section>
+
+    <script>
+    function loadTasks() {
+      const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+      const taskList = document.getElementById('taskList');
+      taskList.innerHTML = '';
+      tasks.forEach((task, index) => {
+        const li = document.createElement('li');
+        li.textContent = task;
+        const btn = document.createElement('button');
+        btn.textContent = 'Remove';
+        btn.className = 'remove-btn';
+        btn.onclick = () => removeTask(index);
+        li.appendChild(btn);
+        taskList.appendChild(li);
+      });
+    }
+    function addTask() {
+      const taskInput = document.getElementById('taskInput');
+      const task = taskInput.value.trim();
+      if (!task) return;
+      const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+      tasks.push(task);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      taskInput.value = '';
+      loadTasks();
+    }
+    function removeTask(index) {
+      const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+      tasks.splice(index, 1);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      loadTasks();
+    }
+    const products = [
+      { name: 'T-shirts', category: 'clothing', price: 800 },
+      { name: 'Laptops', category: 'electronics', price: 60000 },
+      { name: 'Jeans', category: 'clothing', price: 2200 },
+      { name: 'Phones', category: 'electronics', price: 55000 },
+      { name: 'Watches', category: 'accessories', price: 5000 },
+      { name: 'Eyewear', category: 'accessories', price: 2000 },
+    ];
+    function displayItems(items = products) {
+      const productList = document.getElementById('productList');
+      productList.innerHTML = '';
+      items.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.name} - ₹${item.price}`;
+        productList.appendChild(li);
+      });
+    }
+    function filterItems() {
+      const category = document.getElementById('categoryFilter').value;
+      const filtered = category === 'all' ? products : products.filter(p => p.category === category);
+      displayItems(filtered);
+    }
+    function sortItems() {
+      const criteria = document.getElementById('sortPrice').value;
+      let sorted = [...products];
+      if (criteria === 'asc') sorted.sort((a, b) => a.price - b.price);
+      else if (criteria === 'desc') sorted.sort((a, b) => b.price - a.price);
+      displayItems(sorted);
+    }
+    loadTasks();
+    displayItems();
+  </script>
+</body>
+</html>
+
