@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Supriya's E-Commerce</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      background: linear-gradient(to right, #7e5f5f, #b5b9c3);
+      color: #333;
+      line-height: 1.6;
+    }
+    header {
+      background-color: #475666;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    nav {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .cart {
+      background: white;
+      color: #546476;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .cart-box {
+      background: white;
+      color: #333;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-top: 1rem;
+    }
+    main {
+      padding: 2rem;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+    }
+    .product-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .product-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+    .product-card img {
+      max-width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    button {
+      background-color: #657b93;
+      color: white;
+      border: none;
+      padding: 0.6rem 1rem;
+      margin-top: 0.5rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: #6f4e4e;
+      color: white;
+      margin-top: 2rem;
+    }
+    .search-box {
+      text-align: center;
+      margin: 1rem;
+    }
+    .search-box input {
+      padding: 0.5rem;
+      width: 250px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .info-box {
+      text-align: center;
+      margin-bottom: 2rem;
+      background-color: #eef6ff;
+      padding: 1rem;
+      border-radius: 10px;
+    }
+    .info-box p {
+      margin: 0.5rem 0;
+    }
+    .low { background-color: #e6ffe6; }
+    .medium { background-color: #fff9e6; }
+    .high { background-color: #ffe6e6; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Supriya's E-Commerce</h1>
+    <nav>
+      <select id="categoryFilter" onchange="filterItems()">
+        <option value="all">All Categories</option>
+        <option value="electronics">Electronics</option>
+        <option value="clothing">Clothing</option>
+        <option value="accessories">Accessories</option>
+      </select>
+      <select id="sortPrice" onchange="sortItems()">
+        <option value="default">Sort by</option>
+        <option value="asc">Price: Low to High</option>
+        <option value="desc">Price: High to Low</option>
+      </select>
+      <div class="cart" onclick="toggleCart()">🛒 <span id="cartCount">0</span></div>
+    </nav>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search products..." oninput="searchItems()" />
+    </div>
+  </header>
+
+  <main>
+    <div class="info-box">
+      <h2>Welcome to Supriya's Online Store</h2>
+      <p>Browse our premium collection of products at affordable prices.</p>
+      <p>Enjoy seamless shopping, fast delivery, multiple payment options, and 24/7 support!</p>
+    </div>
+    
+    <section id="productList" class="product-grid"></section>
+
+    <section id="cartSection" class="cart-box" style="display:none;">
+      <h2>Your Cart</h2>
+      <div id="cartItems"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Supriya Mandal. Internship Project - ApexPlanet</p>
+  </footer>
+
+  <script>
+    const products = [
+      { name: 'Smartphone', category: 'electronics', price: 55000, image: 'https://miro.medium.com/v2/resize:fit:1200/1*RKu1fFwMi-0v2Hbv5B3bpQ.jpeg' },
+      { name: 'T-shirt', category: 'clothing', price: 800, image: 'https://m.media-amazon.com/images/I/61bDoqhvEPL._AC_UL800_QL65_.jpg' },
+      { name: 'Jeans', category: 'clothing', price: 2200, image: 'https://th.bing.com/th/id/OPAC.qev8tP4Z30wxrA474C474?w=220&h=210&c=17&o=5&dpr=1.3&pid=21.1' },
+      { name: 'Watch - Basic', category: 'accessories', price: 1000, image: 'https://i5.walmartimages.com/asr/d50fcbcb-91bf-4252-9513-01b4e4ee41be.d23f5e932e1d39c395fd7ac938f90bfa.jpeg' },
+      { name: 'Watch - Classic', category: 'accessories', price: 10000, image: 'https://th.bing.com/th/id/OIP.G6bPiXMBkKDZWU7BSSMNGwHaE8?o=7rm=3&rs=1&pid=ImgDetMain' },
+      { name: 'Watch - Premium', category: 'accessories', price: 8500, image: 'https://files.sophie.co.ke/2023/05/1955044573_8664-1_9826.jpg' },
+      { name: 'Watch - Luxury', category: 'accessories', price: 1900000, image: 'https://media.neimanmarcus.com/f_auto,q_auto/01/nm_466526_100000_m' },
+      { name: 'Eyewear - Budget', category: 'accessories', price: 1000, image: 'https://th.bing.com/th/id/OIP._bw7d0USUhcm7K72zDPeFgHaHa?o=7rm=3&rs=1&pid=ImgDetMain' },
+      { name: 'Eyewear - Stylish', category: 'accessories', price: 2500, image: 'https://tse1.explicit.bing.net/th/id/OIP.locP-xecwd53Z1OfwYZ5tgHaLH?rs=1&pid=ImgDetMain' },
+      { name: 'Eyewear - Designer', category: 'accessories', price: 5000, image: 'https://th.bing.com/th/id/OIP.0JVRRpRa29a5-2UEgOUflwHaHZ?o=7rm=3&rs=1&pid=ImgDetMain' },
+    ];
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    function updateCartCount() {
+      document.getElementById('cartCount').textContent = cart.length;
+    }
+    function displayItems(items = products) {
+      const productList = document.getElementById('productList');
+      productList.innerHTML = '';
+      items.forEach((item, index) => {
+        let priceClass = item.price <= 1000 ? 'low' : item.price <= 5000 ? 'medium' : 'high';
+        const card = document.createElement('div');
+        card.className = `product-card ${priceClass}`;
+        card.innerHTML = `
+          <img src="${item.image}" alt="${item.name}" loading="lazy"/>
+          <h3>${item.name}</h3>
+          <p>₹${item.price}</p>
+          <p>Fast Delivery | Easy Returns | Secure Checkout</p>
+          <button onclick='addToCart(${index})'>Add to Cart</button>
+        `;
+        productList.appendChild(card);
+      });
+    }
+
+    function displayCart() {
+      const cartItems = document.getElementById('cartItems');
+      cartItems.innerHTML = '';
+      cart.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.style.marginBottom = '10px';
+        div.innerHTML = `
+          <strong>${item.name}</strong> - ₹${item.price}
+          <button onclick="removeFromCart(${index})">Remove</button>
+        `;
+        cartItems.appendChild(div);
+      });
+    }
+
+    function toggleCart() {
+      const cartSection = document.getElementById('cartSection');
+      if (cartSection.style.display === 'none') {
+        cartSection.style.display = 'block';
+        displayCart();
+      } else {
+        cartSection.style.display = 'none';
+      }
+    }
+
+    function filterItems() {
+      const category = document.getElementById('categoryFilter').value;
+      const filtered = category === 'all' ? products : products.filter(p => p.category === category);
+      displayItems(filtered);
+    }
+
+    function sortItems() {
+      const sort = document.getElementById('sortPrice').value;
+      let sorted = [...products];
+      if (sort === 'asc') sorted.sort((a, b) => a.price - b.price);
+      else if (sort === 'desc') sorted.sort((a, b) => b.price - a.price);
+      displayItems(sorted);
+    }
+
+    function searchItems() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const results = products.filter(p => p.name.toLowerCase().includes(query));
+      displayItems(results);
+    }
+
+    function addToCart(index) {
+      cart.push(products[index]);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      displayCart();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      displayCart();
+    }
+
+    displayItems();
+    updateCartCount();
+  </script>
+</body>
+</html>
+
+
+
+
+
