@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interactive Web Playground</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #5f2c82, #49a09d);
+      min-height: 100vh;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1rem;
+      opacity: 0.8;
+    }
+
+    .wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      padding: 2rem;
+    }
+
+    section {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(12px);
+      transition: 0.3s ease;
+    }
+
+    section:hover {
+      transform: scale(1.01);
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: linear-gradient(to right, #43e97b, #38f9d7);
+      border: none;
+      color: #000;
+      font-weight: bold;
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #38f9d7, #43e97b);
+    }
+
+    #feedback {
+      margin-top: 10px;
+      font-weight: 500;
+    }
+
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    li {
+      background-color: rgba(255, 255, 255, 0.15);
+      padding: 0.7rem;
+      margin: 0.5rem 0;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    li button {
+      background-color: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+    }
+
+    li button:hover {
+      background-color: #ff3b3b;
+    }
+
+    @media (max-width: 768px) {
+      .wrapper {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Interactive Web Playground</h1>
+    <p>Form Validation | DOM Handling | Responsive Layout</p>
+  </header>
+
+  <main class="wrapper">
+    
+    <section>
+      <h2>Join Our Insider Club</h2>
+      <form id="subscribeForm">
+        <input type="text" id="fullName" placeholder="Your full name" required />
+        <input type="email" id="subscriberEmail" placeholder="Your email address" required />
+        <textarea id="comments" rows="4" placeholder="Tell us why you're joining (Optional)"></textarea>
+        <button type="submit">Become a Member</button>
+        <p id="feedback"></p>
+      </form>
+    </section>
+
+    
+    <section>
+      <h2>Quick Notes</h2>
+      <input type="text" id="noteInput" placeholder="Write a quick note..." />
+      <button onclick="addNote()">Add Note</button>
+      <ul id="noteList"></ul>
+    </section>
+  </main>
+
+  <script>
+    
+    document.getElementById("subscribeForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById("fullName").value.trim();
+      const email = document.getElementById("subscriberEmail").value.trim();
+      const feedback = document.getElementById("feedback");
+
+      if (name === "" || email === "") {
+        feedback.textContent = "Please fill in both name and email!";
+        feedback.style.color = "#ffcc00";
+        return;
+      }
+
+      const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+      if (!emailPattern.test(email)) {
+        feedback.textContent = "That doesn't look like a valid email.";
+        feedback.style.color = "#ff9999";
+        return;
+      }
+
+      feedback.textContent = `Thanks for joining, ${name.split(" ")[0]}! 🎉`;
+      feedback.style.color = "#90ee90";
+      document.getElementById("subscribeForm").reset();
+    });
+
+ 
+    function addNote() {
+      const noteInput = document.getElementById("noteInput");
+      const noteText = noteInput.value.trim();
+      if (noteText === "") return;
+
+      const li = document.createElement("li");
+      li.textContent = noteText;
+
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "Delete";
+      delBtn.onclick = () => li.remove();
+
+      li.appendChild(delBtn);
+      document.getElementById("noteList").appendChild(li);
+
+      noteInput.value = "";
+    }
+  </script>
+</body>
+</html>
+
+
+
+
